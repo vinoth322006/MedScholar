@@ -31,6 +31,21 @@ services:
       timeout: 3s
       retries: 10
 
+  semantic-engine:
+    build:
+      context: ./server/semantic_engine
+      dockerfile: Dockerfile
+    container_name: medisearch-semantic-engine
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - NPROBE=24
+      - RERANK_POOL_MAX=50
+    volumes:
+      - medisearch_huggingface_cache:/root/.cache/huggingface
+
 volumes:
   medisearch_pgdata:
   medisearch_redisdata:
+  medisearch_huggingface_cache:

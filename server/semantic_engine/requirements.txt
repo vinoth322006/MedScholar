@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+torch
+transformers
+faiss-cpu
+numpy
+requests
+huggingface_hub
+python-dotenv
+pydantic
+ 

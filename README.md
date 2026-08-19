@@ -1,12 +1,12 @@
 # 🧬 MedScholar — PubMed Semantic Search
 
-A production-grade web application for biomedical researchers to search PubMed/PMC using **natural-language semantic search** (powered by NCBI's public Semantic Engine API). It includes full user authentication, role-based access, advanced bookmarking, search history, and an admin analytics dashboard.
+A production-grade web application for biomedical researchers to search PubMed/PMC using **natural-language semantic search** (powered by the local `server/semantic_engine` ML service). It includes full user authentication, role-based access, advanced bookmarking, search history, and an admin analytics dashboard.
 
 ---
 
 ## ✨ Core Features
 
-*   **Semantic Search:** Uses AI to understand the *meaning* of a query, not just keywords, returning highly relevant PubMed articles.
+*   **Semantic Search:** Uses AI to understand the *meaning* of a query, not just keywords, returning highly relevant PubMed articles via the custom `server/semantic_engine` vector search engine.
 *   **Authentication & Security:** Secure JWT-based auth (short-lived access + rotating HttpOnly refresh cookies), rate limiting, and brute-force protection.
 *   **User Workspaces:** Registered users can view their search history, re-run past queries, and bookmark articles.
 *   **Admin Dashboard:** A dedicated interface for administrators to view system health, aggregated search metrics, active user counts, and popular queries.
@@ -95,11 +95,11 @@ We have a dedicated, highly-detailed guide for production deployment. Please see
 
 ## 🔌 External API Integrations
 
-MedScholar acts as a fast, intelligent wrapper around NCBI's infrastructure. It is designed to be highly respectful of NCBI's servers.
+MedScholar acts as a fast, intelligent wrapper around its local Semantic Engine. 
 
-*   **Semantic Engine:** Used for semantic retrieval. We enforce a **global 1 request/sec limit** across all users to protect our IP from being banned by NCBI.
-*   **E-utilities (esummary):** Used to fetch rich metadata (authors, journal, publication date) for the PMIDs returned by SemanticEngine.
-*   **Aggressive Caching:** All SemanticEngine search results are cached in Redis for 20 minutes. All E-utilities metadata is cached for 30 days (as article metadata rarely changes).
+*   **server/semantic_engine (Semantic Engine):** Used for local semantic retrieval, utilizing MedCPT embeddings and FAISS vector indexing instead of the legacy LitSense API. 
+*   **E-utilities (esummary):** Used to fetch rich metadata (authors, journal, publication date) for the PMIDs returned by the local Semantic Engine.
+*   **Aggressive Caching:** All search results are cached in Redis for 20 minutes. All E-utilities metadata is cached for 30 days (as article metadata rarely changes).
 
 
 
@@ -127,7 +127,6 @@ If the client requires per-user raw query visibility, set `ADMIN_CAN_VIEW_USER_Q
 ---
 
 ## 🚫 Out of Scope
-*   Custom search index / embedding model (this app is intentionally a reliable layer over NCBI's existing SemanticEngine infrastructure).
 *   Payment/billing.
 *   Multi-tenant org support beyond `user` / `admin` roles.
 *   Mobile native apps (responsive web is the target).

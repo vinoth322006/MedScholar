@@ -70,9 +70,25 @@ services:
     networks:
       - medscholar
 
+  # ── Semantic Engine (FastAPI + FAISS + MedCPT) ────────────────────────
+  semantic-engine:
+    build:
+      context: ./server/semantic_engine
+      dockerfile: Dockerfile
+    container_name: medscholar-semantic-engine
+    restart: unless-stopped
+    environment:
+      - NPROBE=24
+      - RERANK_POOL_MAX=50
+    volumes:
+      - medscholar_huggingface_cache:/root/.cache/huggingface
+    networks:
+      - medscholar
+
 volumes:
   medscholar_pgdata:
   medscholar_redisdata:
+  medscholar_huggingface_cache:
 
 networks:
   medscholar:
